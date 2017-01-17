@@ -77,17 +77,51 @@ def crawl(seed):
     tocrawl = [seed]
     crawled = []
     index = {}
+    graph = {}
     while tocrawl:
         url = tocrawl.pop()
         if url not in crawled:
             contents = get_page(url)
             add_page_to_index(index,url,contents)
-            union(tocrawl,get_all_links(contents))
+            outlinks = get_all_links(contents)
+            graph[url] = outlinks
+            union(tocrawl,outlinks)
             crawled.append(url)
-    return index
+    return index, graph
 
-index = crawl('http://www.udacity.com/cs101x/index.html')
+index, graph = crawl('http://udacity.com/cs101x/urank/index.html')
+
+#Compute ranks
+def compute_ranks(graph):
+    d = 0.8 #damping factor
+    numloops = 10
+
+    ranks = {}
+    npages = len(graph)
+    for page in graph:
+        ranks[page] = 1.0 / npages #The default rank of each page
+    for i in range(0,numloops):
+        newranks = {}
+        for page in graph:
+            newrank  = (1 - d)/npages
+            for node in graph:
+                if page in graph[node]:
+                    newrank = newrank + (d * ranks[node]) / len(graph[node])
+            newranks[page] = newrank
+        ranks = newranks
+    return ranks
+
+#Search Engine
+
+def search(index, ranks, keyword):
+    
+
+
+
+#index, graph = crawl('http://www.udacity.com/cs101x/index.html')
+
+print compute_ranks(graph)
 #print crawl('http://xkcd.com/353')
-print index
+#print index
 #print look_up(index,'<html>')
 
