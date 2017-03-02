@@ -111,13 +111,6 @@ def compute_ranks(graph):
         ranks = newranks
     return ranks
 
-#Search Engine
-
-def search(index, ranks, keyword):
-    
-
-
-
 #index, graph = crawl('http://www.udacity.com/cs101x/index.html')
 
 print compute_ranks(graph)
